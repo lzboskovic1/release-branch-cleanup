@@ -20,7 +20,7 @@ jobs:
         id: calculate-cutoff-date
         run: |
           # Calculate the cutoff date (2 months ago) in ISO 8601 format
-          cutoff_date=$(date -d "2 months ago" --utc +'%Y-%m-%dT%H:%M:%SZ')
+          cutoff_date=$(date -d "20 minutes ago" --utc +'%Y-%m-%dT%H:%M:%SZ')
           echo "cutoff_date=$cutoff_date" >> $GITHUB_ENV
           echo $cutoff_date
 
@@ -31,7 +31,7 @@ jobs:
           branches=$(git branch -r | grep 'origin/release-' | sed 's|origin/||')
           for branch in $branches; do
             # Get the last commit date for the branch
-            last_commit_date=$(git log -1 --format=%ci origin/$branch)
+            last_commit_date=$(git log -1 --format=%ct origin/$branch | xargs -I {} date -u -d @{} +"%Y-%m-%dT%H:%M:%SZ"))
             echo "Branch: $branch, Last Commit Date: $last_commit_date"
             
             # Compare the last commit date to the cutoff date
