@@ -1,0 +1,50 @@
+name: 'create release branch'
+on: 
+  workflow_dispatch:
+
+permissions:
+  contents: write  # Required to create and delete branches
+  id-token: write  # Required for AWS OIDC connection
+
+jobs:
+
+  delete-old-release-branches:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout the repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Get current date and calculate cutoff date
+        id: calculate-cutoff-date
+        run: |
+          # Calculate the cutoff date (2 months ago) in ISO 8601 format
+          cutoff_date=$(date -d "2 months ago" --utc +'%Y-%m-%dT%H:%M:%SZ')
+          echo "cutoff_date=$cutoff_date" >> $GITHUB_ENV
+
+      - name: List all release branches and check commit dates
+        id: list-release-branches
+        run: |
+          # List all remote branches that start with 'release-'
+          branches=$(git branch -r | grep 'origin/release-' | sed 's|origin/||')
+          for branch in $branches; do
+            # Get the last commit date for the branch
+            last_commit_date=$(git log -1 --format=%ci origin/$branch)
+            echo "Branch: $branch, Last Commit Date: $last_commit_date"
+            
+            # Compare the last commit date to the cutoff date
+            if [[ "$last_commit_date" < "$cutoff_date" ]]; then
+              echo "Branch $branch is older than 2 months, scheduling for deletion."
+              echo "$branch" >> old_branches.txt
+            fi
+          done
+          cat old_branches.txt
+
+      # - name: Delete old release branches
+      #   run: |
+      #     # Delete branches that are older than 2 months
+      #     while read -r branch; do
+      #       echo "Deleting branch $branch"
+      #       git push origin --delete $branch
+      #     done < old_branches.txt
