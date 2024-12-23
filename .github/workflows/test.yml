@@ -31,7 +31,7 @@ jobs:
           branches=$(git branch -r | grep 'origin/release-' | sed 's|origin/||')
           for branch in $branches; do
             # Get the last commit date for the branch
-            last_commit_date=$(git log -1 --format=%ct origin/$branch | xargs -I {} date -u -d @{} +"%Y-%m-%dT%H:%M:%SZ"))
+            last_commit_date=$(git log -1 --format=%ct origin/$branch | xargs -I {} date -u -d @{} +"%Y-%m-%dT%H:%M:%SZ")
             echo "Branch: $branch, Last Commit Date: $last_commit_date"
             
             # Compare the last commit date to the cutoff date
