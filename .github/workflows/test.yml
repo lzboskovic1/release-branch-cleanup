@@ -42,10 +42,9 @@ jobs:
           done
           cat old_branches.txt
 
-      # - name: Delete old release branches
-      #   run: |
-      #     # Delete branches that are older than 2 months
-      #     while read -r branch; do
-      #       echo "Deleting branch $branch"
-      #       git push origin --delete $branch
-      #     done < old_branches.txt
+      - name: Delete old release branches
+        run: |
+          # Delete branches that are older than 2 months
+          while read -r branch; do
+            echo "Deleting branch $branch"
+          done < old_branches.txt
