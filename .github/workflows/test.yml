@@ -20,7 +20,7 @@ jobs:
         id: calculate-cutoff-date
         run: |
           # Calculate the cutoff date (2 months ago) in ISO 8601 format
-          cutoff_date=$(date -d "2 months ago" --utc +'%Y-%m-%dT%H:%M:%SZ')
+          cutoff_date=$(date -d "1 month ago" --utc +'%Y-%m-%dT%H:%M:%SZ')
           echo "cutoff_date=$cutoff_date" >> $GITHUB_ENV
           echo $cutoff_date
 
