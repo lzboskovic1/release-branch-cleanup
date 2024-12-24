@@ -19,8 +19,8 @@ jobs:
       - name: Get current date and calculate cutoff date
         id: calculate-cutoff-date
         run: |
-          # Calculate the cutoff date (2 months ago) in ISO 8601 format
-          cutoff_date=$(date -d "1 month ago" --utc +'%Y-%m-%dT%H:%M:%SZ')
+          # Calculate the cutoff date (2 weeks ago) in ISO 8601 format
+          cutoff_date=$(date -d "2 weeks ago" --utc +'%Y-%m-%dT%H:%M:%SZ')
           echo "cutoff_date=$cutoff_date" >> $GITHUB_ENV
           echo $cutoff_date
 
@@ -36,7 +36,7 @@ jobs:
             
             # Compare the last commit date to the cutoff date
             if [[ "$last_commit_date" < "$cutoff_date" ]]; then
-              echo "Branch $branch is older than 2 months, scheduling for deletion."
+              echo "Branch $branch is older than 2 weeks, scheduling for deletion."
               echo "$branch" >> old_branches.txt
             fi
           done
@@ -44,13 +44,13 @@ jobs:
 
       - name: Delete old release branches
         run: |
-          # Delete branches that are older than 2 months
+          # Delete branches that are older than 2 weeks
           if [[ -f old_branches.txt ]]; then
             while read -r branch; do
               echo "Deleting branch $branch"
               git push origin --delete $branch
             done < old_branches.txt
           else
-          echo "No branches older than two months. Skipping deletion process." 
+          echo "No branches older than two weeks. Skipping deletion process." 
           fi
             
