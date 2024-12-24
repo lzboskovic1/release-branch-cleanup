@@ -35,13 +35,12 @@ jobs:
             echo "Branch: $branch, Last Commit Date: $last_commit_date"
             
             # Compare the last commit date to the cutoff date
-            nano old_branches.txt
             if [[ "$last_commit_date" < "$cutoff_date" ]]; then
               echo "Branch $branch is older than 2 months, scheduling for deletion."
               echo "$branch" >> old_branches.txt
             fi
           done
-          cat old_branches.txt
+
 
       - name: Delete old release branches
         run: |
