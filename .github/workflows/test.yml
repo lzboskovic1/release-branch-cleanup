@@ -48,6 +48,7 @@ jobs:
           if [[ -f old_branches.txt ]]; then
             while read -r branch; do
               echo "Deleting branch $branch"
+              git push origin --delete $branch
             done < old_branches.txt
           else
           echo "No branches older than two months. Skipping deletion process." 
